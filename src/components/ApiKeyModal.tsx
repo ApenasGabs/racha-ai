@@ -23,7 +23,7 @@ const DEFAULT_MODELS: Record<AiProvider, string> = {
   xai: 'grok-2-vision-latest',
 };
 
-export function ApiKeyModal({ currentConfig, onSave, onClose }: ApiKeyModalProps) {
+export const ApiKeyModal = ({ currentConfig, onSave, onClose }: ApiKeyModalProps) => {
   const [apiKey, setApiKey] = useState(currentConfig?.apiKey ?? '');
   const [provider, setProvider] = useState<AiProvider>(currentConfig?.provider ?? 'groq');
   const [customModel, setCustomModel] = useState(currentConfig?.customModel ?? '');

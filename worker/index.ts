@@ -184,7 +184,7 @@ async function handleOcr(request: Request): Promise<Response> {
   }
 }
 
-async function handleVerifyKey(request: Request): Promise<Response> {
+const handleVerifyKey = async (request: Request): Promise<Response> => {
   if (request.method !== 'POST') {
     return jsonResponse({ error: 'Method not allowed' }, 405);
   }

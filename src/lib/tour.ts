@@ -5,23 +5,23 @@ const TOUR_STORAGE_PREFIX = 'racha_ai_tour_seen_v1_';
 
 export type TourScope = 'landing' | 'host' | 'guest';
 
-export function hasSeenTour(scope: TourScope): boolean {
+export const hasSeenTour = (scope: TourScope): boolean => {
   try {
     return localStorage.getItem(`${TOUR_STORAGE_PREFIX}${scope}`) === '1';
   } catch {
     return true;
   }
-}
+};
 
-export function markTourSeen(scope: TourScope): void {
+export const markTourSeen = (scope: TourScope): void => {
   try {
     localStorage.setItem(`${TOUR_STORAGE_PREFIX}${scope}`, '1');
   } catch {
     // ignore
   }
-}
+};
 
-function getStepsForScope(scope: TourScope): DriveStep[] {
+const getStepsForScope = (scope: TourScope): DriveStep[] => {
   if (scope === 'landing') {
     return [
       {
@@ -127,7 +127,7 @@ function getStepsForScope(scope: TourScope): DriveStep[] {
   ];
 }
 
-export function startTour(scope: TourScope): void {
+export const startTour = (scope: TourScope): void => {
   const allSteps = getStepsForScope(scope);
   // Filtra apenas passos cujo elemento está visível no DOM atual
   const availableSteps = allSteps.filter((step) => {
