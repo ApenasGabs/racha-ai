@@ -154,4 +154,40 @@ describe('computeBillSummary', () => {
     expect(summary.unclaimedItems).toHaveLength(1);
     expect(summary.unclaimedItemsCents).toBe(600);
   });
+
+  it('divide 1 frango em 5 partes sem precisar cadastrar 5 pessoas', () => {
+    const gabs = makeParticipant({ id: 'gabs', name: 'Gabs', isHost: true });
+    const state: SessionState = {
+      roomId: 'FRANGO-5',
+      title: 'Frango na Mesa',
+      serviceFeePercent: 10,
+      discountCents: 0,
+      coverChargeCents: 0,
+      participants: [gabs],
+      items: [
+        {
+          id: 'frango',
+          name: 'Frango à Passarinho',
+          quantity: 1,
+          totalCents: 7500, // R$ 75,00 dividido em 5 = R$ 15,00 por parte
+          splitTotalShares: 5,
+          claims: { gabs: 1 },
+          createdAt: 1000,
+        },
+      ],
+      updatedAt: 1000,
+      version: 1,
+    };
+
+    const summary = computeBillSummary(state);
+    const gabsBreakdown = summary.byParticipant.find((b) => b.participant.id === 'gabs');
+
+    expect(gabsBreakdown?.itemsSubtotalCents).toBe(1500); // 1/5 de R$ 75,00
+    expect(gabsBreakdown?.serviceFeeCents).toBe(150); // 10% sobre R$ 15,00
+    expect(gabsBreakdown?.totalCents).toBe(1650); // R$ 16,50
+    expect(gabsBreakdown?.lines[0]?.shares).toBe(1);
+    expect(gabsBreakdown?.lines[0]?.totalShares).toBe(5);
+    expect(summary.claimedItemsCents).toBe(1500);
+    expect(summary.unclaimedItemsCents).toBe(6000); // 4/5 restantes = R$ 60,00
+  });
 });

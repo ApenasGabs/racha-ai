@@ -90,6 +90,26 @@ const getStepsForScope = (scope: TourScope): DriveStep[] => {
         },
       },
       {
+        element: '[data-tour="first-item"]',
+        popover: {
+          title: 'Como dividir cada item',
+          description:
+            'Toque em "+ Entrar" nos itens que você consumiu (use -/+ para mais cotas). Quer dividir 1 frango em 5 sem cadastrar 5 pessoas? Toque em "Dividir em N → ÷5" direto no item!',
+          side: 'bottom',
+          align: 'center',
+        },
+      },
+      {
+        element: '[data-tour="items-help"]',
+        popover: {
+          title: 'Dúvida na hora de dividir?',
+          description:
+            'Toque em "Como dividir?" sempre que quiser ver o guia rápido de cotas, divisão em N partes e participantes manuais.',
+          side: 'bottom',
+          align: 'end',
+        },
+      },
+      {
         element: '[data-tour="tab-summary"]',
         popover: {
           title: 'Resumo & Pagar por mais pessoas',
@@ -107,9 +127,19 @@ const getStepsForScope = (scope: TourScope): DriveStep[] => {
     {
       element: '[data-tour="participants-bar"]',
       popover: {
-        title: 'Escolha seus itens',
+        title: 'Escolha para quem marcar',
         description:
-          'Toque em "Entrar" nos itens que você consumiu. Você também pode adicionar pessoas manuais e marcar itens por elas!',
+          'Por padrão você marca para si mesmo, mas também pode adicionar pessoas manuais e marcar itens por elas!',
+        side: 'bottom',
+        align: 'center',
+      },
+    },
+    {
+      element: '[data-tour="first-item"]',
+      popover: {
+        title: 'Entre ou divida em N partes',
+        description:
+          'Toque em "+ Entrar" nos itens que você consumiu. Se dividiu um prato com pessoas fora do app (ex: 1 frango em 5), toque em "Dividir em N → ÷5"!',
         side: 'bottom',
         align: 'center',
       },

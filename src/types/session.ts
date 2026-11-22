@@ -18,6 +18,11 @@ export interface BillItem {
   quantity: number;
   /** Preço total da linha em centavos (ex: 3 chopps = R$ 36,00 -> 3600) */
   totalCents: number;
+  /**
+   * Número fixo de partes para dividir o item (ex: 5 para dividir 1 frango em 5 sem cadastrar 5 pessoas).
+   * Quando null/undefined, divide automaticamente pela soma das cotas de quem entrou.
+   */
+  splitTotalShares?: number | null;
   /** Mapa participantId -> cotas/peso (padrão 1 = entra igualmente; >1 = múltiplas unidades/cotas) */
   claims: Record<string, number>;
   createdAt: number;
@@ -45,6 +50,7 @@ export type SessionAction =
   | { type: 'REMOVE_PARTICIPANT'; participantId: string }
   | { type: 'TOGGLE_CLAIM'; itemId: string; participantId: string }
   | { type: 'SET_CLAIM_SHARES'; itemId: string; participantId: string; shares: number }
+  | { type: 'SET_ITEM_SPLIT_PARTS'; itemId: string; splitTotalShares: number | null }
   | { type: 'SET_PAID_BY'; participantId: string; paidById: string | null }
   | { type: 'ADD_ITEM'; name: string; quantity: number; totalCents: number }
   | { type: 'ADD_ITEMS_BATCH'; items: Array<{ name: string; quantity: number; totalCents: number }>; serviceFeePercent?: number | null; discountCents?: number | null }
