@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@layer base {
+  html,
+  body {
+    background-color: #09090b;
+    color: #f4f4f5;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Scrollbar sutil para listas horizontais de participantes */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
