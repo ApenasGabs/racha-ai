@@ -6,6 +6,7 @@ import {
   ChevronUp,
   Copy,
   HandCoins,
+  Heart,
   Split,
   Users,
 } from 'lucide-react';
@@ -24,6 +25,7 @@ interface SummaryViewProps {
     coverChargeCents?: number;
     discountCents?: number;
   }) => void;
+  onOpenDonation: () => void;
 }
 
 export function SummaryView({
@@ -33,6 +35,7 @@ export function SummaryView({
   onSetPaidBy,
   onSplitUnclaimed,
   onUpdateSettings,
+  onOpenDonation,
 }: SummaryViewProps) {
   const [copied, setCopied] = useState(false);
   const [expandedPayerId, setExpandedPayerId] = useState<string | null>(myParticipantId);
@@ -379,6 +382,23 @@ export function SummaryView({
             </div>
           );
         })}
+      </section>
+
+      {/* Card discreto de apoio via LivePix */}
+      <section className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-rose-500/20 bg-rose-500/5 p-3.5">
+        <div className="flex items-center gap-2.5">
+          <Heart className="h-4 w-4 shrink-0 fill-rose-500/30 text-rose-400" />
+          <p className="text-xs text-zinc-300">
+            O <strong className="text-white">RachaAí</strong> salvou a conta da mesa? Pague um café pro dev!
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onOpenDonation}
+          className="rounded-xl border border-rose-500/40 bg-rose-500/15 px-3 py-1.5 text-xs font-bold text-rose-200 transition hover:bg-rose-500/25 active:scale-95"
+        >
+          Apoiar via LivePix
+        </button>
       </section>
     </div>
   );
