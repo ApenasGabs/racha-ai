@@ -142,6 +142,20 @@ export function applySessionAction(state: SessionState, action: SessionAction): 
       };
     }
 
+    case 'SET_ITEM_SPLIT_PARTS': {
+      const normalized =
+        action.splitTotalShares === null || action.splitTotalShares <= 1
+          ? null
+          : Math.min(99, Math.round(action.splitTotalShares));
+      return {
+        ...state,
+        ...nextBase,
+        items: state.items.map((item) =>
+          item.id === action.itemId ? { ...item, splitTotalShares: normalized } : item
+        ),
+      };
+    }
+
     case 'SET_PAID_BY': {
       const { participantId, paidById } = action;
       if (!state.participants.some((p) => p.id === participantId)) return state;

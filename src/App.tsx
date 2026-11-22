@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { HandCoins, Loader2, ReceiptText } from 'lucide-react';
+import { Divide, HandCoins, HelpCircle, Loader2, ReceiptText } from 'lucide-react';
 import type { SessionState } from './types/session';
 import {
   deleteHostSession,
@@ -59,6 +59,7 @@ export default function App() {
   const [showQrModal, setShowQrModal] = useState(false);
   const [showApiKeyModal, setShowApiKeyModal] = useState(false);
   const [showDonationModal, setShowDonationModal] = useState(false);
+  const [showItemsHelp, setShowItemsHelp] = useState(false);
 
   const isHost = Boolean(roomId && hostSecret);
   const shouldConnect = Boolean(roomId && (isHost || guestNameConfirmed));
@@ -376,6 +377,46 @@ export default function App() {
               }
             />
 
+            {/* Cabeçalho da lista de itens com botão de ajuda sempre acessível */}
+            <div className="flex items-center justify-between px-1 pt-0.5">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+                Itens da Conta ({state.items.length})
+              </h2>
+              <button
+                type="button"
+                data-tour="items-help"
+                onClick={() => setShowItemsHelp((v) => !v)}
+                className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11px] font-semibold transition ${
+                  showItemsHelp
+                    ? 'border-emerald-500/50 bg-emerald-500/15 text-emerald-300'
+                    : 'border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
+                }`}
+              >
+                <HelpCircle className="h-3.5 w-3.5 text-emerald-400" />
+                Como dividir?
+              </button>
+            </div>
+
+            {showItemsHelp && (
+              <div className="space-y-2 rounded-2xl border border-emerald-500/30 bg-emerald-950/20 p-3.5 text-xs text-zinc-300">
+                <p className="font-bold text-emerald-300">Como funciona a divisão nos itens:</p>
+                <ul className="space-y-1.5 text-zinc-300">
+                  <li>
+                    <strong className="text-white">+ Entrar / - 1 +:</strong> toque para entrar na divisão do item. Se pegou mais de uma unidade (ex: 2 chopps), aumente no <code className="text-emerald-300">+</code>.
+                  </li>
+                  <li className="flex items-start gap-1.5">
+                    <Divide className="mt-0.5 h-3.5 w-3.5 shrink-0 text-sky-400" />
+                    <span>
+                      <strong className="text-sky-300">Dividir em N (sem cadastrar pessoas):</strong> comprou 1 frango e dividiu em 5 pessoas? Toque em <strong className="text-white">Dividir em N → ÷5</strong> e depois em <strong className="text-white">+ Entrar</strong>. Você paga exatamente 1/5!
+                    </span>
+                  </li>
+                  <li>
+                    <strong className="text-white">Marcar pessoas:</strong> adicione quem não entrou no app em <em>+ Pessoa manual</em> ou toque em <em>Marcar pessoas</em> direto no item.
+                  </li>
+                </ul>
+              </div>
+            )}
+
             {state.items.length === 0 ? (
               <div className="rounded-3xl border border-dashed border-zinc-800 bg-zinc-900/30 px-6 py-12 text-center">
                 <ReceiptText className="mx-auto h-10 w-10 text-zinc-600" />
@@ -388,7 +429,7 @@ export default function App() {
               </div>
             ) : (
               <div className="space-y-2.5">
-                {state.items.map((item) => (
+                {state.items.map((item, idx) => (
                   <ItemCard
                     key={item.id}
                     item={item}
@@ -396,11 +437,15 @@ export default function App() {
                     activeParticipantId={activeParticipantId}
                     myParticipantId={identity.clientId}
                     isHost={isHost}
+                    isFirstItem={idx === 0}
                     onToggleClaim={(itemId, participantId) =>
                       dispatch({ type: 'TOGGLE_CLAIM', itemId, participantId })
                     }
                     onSetShares={(itemId, participantId, shares) =>
                       dispatch({ type: 'SET_CLAIM_SHARES', itemId, participantId, shares })
+                    }
+                    onSetSplitParts={(itemId, splitTotalShares) =>
+                      dispatch({ type: 'SET_ITEM_SPLIT_PARTS', itemId, splitTotalShares })
                     }
                     onUpdateItem={(itemId, name, quantity, totalCents) =>
                       dispatch({ type: 'UPDATE_ITEM', itemId, name, quantity, totalCents })

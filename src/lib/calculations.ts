@@ -170,9 +170,26 @@ export function computeBillSummary(state: SessionState): BillSummary {
       continue;
     }
 
-    claimedItemsCents += item.totalCents;
-    const totalShares = validClaims.reduce((acc, c) => acc + c.weight, 0);
-    const split = distributeCents(item.totalCents, validClaims);
+    const claimedShares = validClaims.reduce((acc, c) => acc + c.weight, 0);
+    const fixedParts =
+      typeof item.splitTotalShares === 'number' && item.splitTotalShares > 1
+        ? Math.round(item.splitTotalShares)
+        : 0;
+    const totalShares = Math.max(claimedShares, fixedParts);
+    const unclaimedShares = totalShares - claimedShares;
+
+    const entriesForSplit =
+      unclaimedShares > 0
+        ? [...validClaims, { id: '__unclaimed__', weight: unclaimedShares }]
+        : validClaims;
+
+    const split = distributeCents(item.totalCents, entriesForSplit);
+    const itemUnclaimedCents = unclaimedShares > 0 ? (split.__unclaimed__ ?? 0) : 0;
+    claimedItemsCents += item.totalCents - itemUnclaimedCents;
+
+    if (unclaimedShares > 0) {
+      unclaimedItems.push(item);
+    }
 
     for (const claim of validClaims) {
       const amountCents = split[claim.id] ?? 0;
