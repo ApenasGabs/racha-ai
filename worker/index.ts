@@ -10,7 +10,7 @@ export interface Env {
 const PROVIDER_CONFIG = {
   groq: {
     endpoint: 'https://api.groq.com/openai/v1/chat/completions',
-    defaultModel: 'meta-llama/llama-4-scout-17b-16e-instruct',
+    defaultModel: 'qwen/qwen3.8-27b',
   },
   xai: {
     endpoint: 'https://api.x.ai/v1/chat/completions',
@@ -50,9 +50,9 @@ function jsonResponse(body: unknown, status = 200): Response {
 }
 
 function parseJsonFromLlm(rawText: string): Record<string, unknown> {
-  const trimmed = rawText.trim();
-  const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  const candidate = fenced ? fenced[1].trim() : trimmed;
+  const withoutThink = rawText.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+  const fenced = withoutThink.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  const candidate = fenced ? fenced[1].trim() : withoutThink;
   const start = candidate.indexOf('{');
   const end = candidate.lastIndexOf('}');
   if (start === -1 || end === -1 || end <= start) {
@@ -105,7 +105,7 @@ async function handleOcr(request: Request): Promise<Response> {
       body: JSON.stringify({
         model,
         temperature: 0.1,
-        max_tokens: 2048,
+        max_tokens: 4096,
         messages: [
           { role: 'system', content: RECEIPT_SYSTEM_PROMPT },
           {

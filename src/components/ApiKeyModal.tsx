@@ -10,7 +10,7 @@ interface ApiKeyModalProps {
 }
 
 const DEFAULT_MODELS: Record<AiProvider, string> = {
-  groq: 'meta-llama/llama-4-scout-17b-16e-instruct',
+  groq: 'qwen/qwen3.8-27b',
   xai: 'grok-2-vision-latest',
 };
 

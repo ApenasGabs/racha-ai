@@ -5,7 +5,7 @@ App web mobile-first de **divisão colaborativa de conta em tempo real**, desenh
 ## Funcionalidades
 - **Sessão em tempo real sem cadastro:** abra uma mesa em 1 clique e compartilhe o link ou código.
 - **QR Code sempre no Header:** botão persistente no topo que exibe o QR Code de alto contraste para os amigos entrarem ao vivo.
-- **Leitura de foto da nota fiscal (BYOK):** tire foto ou envie da galeria para extrair itens, quantidades, valores e taxa de serviço usando sua própria chave **Groq** (`gsk_...`, cota grátis rápida) ou **xAI Grok** (`xai-...`).
+- **Leitura de foto da nota fiscal (BYOK):** tire foto ou envie da galeria para extrair itens, quantidades, valores e taxa de serviço usando sua própria chave **Groq** (`gsk_...`, modelo padrão `qwen/qwen3.8-27b`) ou **xAI Grok** (`xai-...`).
 - **Divisão flexível por item:** entre com 1 toque ou ajuste cotas (`- / +`) para itens múltiplos (ex: chopps).
 - **Participantes manuais:** inclua pessoas que não escanearam o QR Code e marque itens para elas normalmente.
 - **Pagar por mais de uma pessoa:** qualquer participante pode assumir e consolidar o pagamento de outras pessoas da mesa (com taxa proporcional fechada ao centavo e resumo pronto para WhatsApp).
