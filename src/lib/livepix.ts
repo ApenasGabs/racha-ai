@@ -8,7 +8,7 @@ export interface LivePixDonationOptions {
   message?: string;
 }
 
-export function isSafeLivePixUrl(url: string): boolean {
+export const isSafeLivePixUrl = (url: string): boolean => {
   try {
     const parsed = new URL(url);
     return (
@@ -18,9 +18,9 @@ export function isSafeLivePixUrl(url: string): boolean {
   } catch {
     return false;
   }
-}
+};
 
-export function buildLivePixDonationUrl(options?: LivePixDonationOptions): string {
+export const buildLivePixDonationUrl = (options?: LivePixDonationOptions): string => {
   const username = (options?.username?.trim() || DEFAULT_LIVEPIX_USERNAME).replace(/^@/, '');
   const url = new URL(`https://livepix.gg/${encodeURIComponent(username)}`);
 

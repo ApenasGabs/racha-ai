@@ -6,7 +6,7 @@ interface DonationModalProps {
   onClose: () => void;
 }
 
-export function DonationModal({ onClose }: DonationModalProps) {
+export const DonationModal = ({ onClose }: DonationModalProps) => {
   const [selectedAmount, setSelectedAmount] = useState<number>(10);
   const [customAmount, setCustomAmount] = useState<string>('');
   const [isCustom, setIsCustom] = useState<boolean>(false);
