@@ -1,4 +1,4 @@
-import { ArrowLeft, KeyRound, QrCode, Users, Wifi, WifiOff } from 'lucide-react';
+import { ArrowLeft, HelpCircle, KeyRound, QrCode, Users, Wifi, WifiOff } from 'lucide-react';
 import type { ConnectionState } from '../lib/ws-client';
 
 interface HeaderProps {
@@ -11,6 +11,7 @@ interface HeaderProps {
   hasApiKey: boolean;
   onOpenQr: () => void;
   onOpenApiKey: () => void;
+  onStartTour: () => void;
   onLeave: () => void;
 }
 
@@ -24,6 +25,7 @@ export function Header({
   hasApiKey,
   onOpenQr,
   onOpenApiKey,
+  onStartTour,
   onLeave,
 }: HeaderProps) {
   const isOnline = connectionState === 'connected' && (isHost || hostOnline);
@@ -77,8 +79,18 @@ export function Header({
           </div>
         </div>
 
-        {/* Direita: Chave BYOK (Host) + Botão QR Code SEMPRE VISÍVEL */}
-        <div className="flex shrink-0 items-center gap-2">
+        {/* Direita: Ajuda + Chave BYOK (Host) + Botão QR Code SEMPRE VISÍVEL */}
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+          <button
+            type="button"
+            onClick={onStartTour}
+            title="Como usar o RachaAí"
+            aria-label="Abrir tutorial de como usar"
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-400 transition hover:border-zinc-700 hover:text-white active:scale-95"
+          >
+            <HelpCircle className="h-4 w-4" />
+          </button>
+
           {isHost && (
             <button
               type="button"
@@ -97,6 +109,7 @@ export function Header({
 
           <button
             type="button"
+            data-tour="header-qr"
             onClick={onOpenQr}
             className="flex h-9 items-center gap-1.5 rounded-xl bg-emerald-500 px-3 text-xs font-bold text-zinc-950 shadow-sm shadow-emerald-500/20 transition hover:bg-emerald-400 active:scale-95"
           >

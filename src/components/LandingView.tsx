@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, KeyRound, Plus, QrCode, Receipt, ShieldCheck, Trash2 } from 'lucide-react';
+import { ArrowRight, HelpCircle, KeyRound, Plus, QrCode, Receipt, ShieldCheck, Trash2 } from 'lucide-react';
 import type { StoredHostSession } from '../lib/storage';
 import { computeBillSummary, formatCurrency } from '../lib/calculations';
 
@@ -12,6 +12,7 @@ interface LandingViewProps {
   onResumeSession: (roomId: string) => void;
   onDeleteSession: (roomId: string) => void;
   onOpenApiKey: () => void;
+  onStartTour: () => void;
 }
 
 export function LandingView({
@@ -23,6 +24,7 @@ export function LandingView({
   onResumeSession,
   onDeleteSession,
   onOpenApiKey,
+  onStartTour,
 }: LandingViewProps) {
   const [title, setTitle] = useState('');
   const [hostName, setHostName] = useState(defaultName);
@@ -54,6 +56,14 @@ export function LandingView({
           <p className="mt-1.5 text-sm text-zinc-400">
             Tire foto da nota, compartilhe o QR Code e cada um escolhe o que consumiu em tempo real.
           </p>
+          <button
+            type="button"
+            onClick={onStartTour}
+            className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs font-medium text-zinc-300 transition hover:border-emerald-500/40 hover:text-white"
+          >
+            <HelpCircle className="h-3.5 w-3.5 text-emerald-400" />
+            Como funciona? (Tour rápido)
+          </button>
         </header>
 
         {/* Criar nova mesa */}
@@ -62,6 +72,7 @@ export function LandingView({
             <h2 className="text-base font-bold text-white">Abrir nova mesa</h2>
             <button
               type="button"
+              data-tour="byok-btn"
               onClick={onOpenApiKey}
               className={`inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11px] font-semibold transition ${
                 hasApiKey
@@ -108,6 +119,7 @@ export function LandingView({
 
             <button
               type="submit"
+              data-tour="create-room"
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-4 py-3 text-sm font-bold text-zinc-950 shadow-lg shadow-emerald-500/20 transition hover:bg-emerald-400 active:scale-[0.98]"
             >
               <Plus className="h-4 w-4" />
@@ -117,7 +129,7 @@ export function LandingView({
         </section>
 
         {/* Entrar em mesa existente */}
-        <section className="rounded-3xl border border-zinc-800/80 bg-zinc-900/50 p-5">
+        <section data-tour="join-room" className="rounded-3xl border border-zinc-800/80 bg-zinc-900/50 p-5">
           <h2 className="mb-3 flex items-center gap-2 text-sm font-bold text-zinc-200">
             <QrCode className="h-4 w-4 text-emerald-400" />
             Entrar com código da mesa

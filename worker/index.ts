@@ -10,10 +10,12 @@ export interface Env {
 const PROVIDER_CONFIG = {
   groq: {
     endpoint: 'https://api.groq.com/openai/v1/chat/completions',
+    modelsEndpoint: 'https://api.groq.com/openai/v1/models',
     defaultModel: 'qwen/qwen3.8-27b',
   },
   xai: {
     endpoint: 'https://api.x.ai/v1/chat/completions',
+    modelsEndpoint: 'https://api.x.ai/v1/models',
     defaultModel: 'grok-2-vision-latest',
   },
 } as const;
@@ -182,6 +184,61 @@ async function handleOcr(request: Request): Promise<Response> {
   }
 }
 
+const handleVerifyKey = async (request: Request): Promise<Response> => {
+  if (request.method !== 'POST') {
+    return jsonResponse({ error: 'Method not allowed' }, 405);
+  }
+
+  const authHeader = request.headers.get('Authorization') || '';
+  if (!authHeader.startsWith('Bearer ') || authHeader.length < 16) {
+    return jsonResponse({ error: 'Chave de API ausente ou muito curta.' }, 401);
+  }
+
+  let body: { provider?: string; model?: string };
+  try {
+    body = (await request.json()) as { provider?: string; model?: string };
+  } catch {
+    return jsonResponse({ error: 'Corpo JSON inválido.' }, 400);
+  }
+
+  const provider = body.provider as ProviderKey | undefined;
+  if (!provider || !(provider in PROVIDER_CONFIG)) {
+    return jsonResponse({ error: 'Provedor inválido.' }, 400);
+  }
+
+  const config = PROVIDER_CONFIG[provider];
+  const targetModel = body.model?.trim() || config.defaultModel;
+
+  try {
+    const res = await fetch(config.modelsEndpoint, {
+      method: 'GET',
+      headers: { Authorization: authHeader },
+      signal: AbortSignal.timeout(10_000),
+    });
+
+    if (!res.ok) {
+      return jsonResponse(
+        { ok: false, error: `Chave rejeitada pela ${provider.toUpperCase()} (HTTP ${res.status}). Verifique se copiou corretamente.` },
+        res.status === 401 || res.status === 403 ? 401 : 502
+      );
+    }
+
+    const data = (await res.json()) as { data?: Array<{ id?: string }> };
+    const ids = (data.data ?? []).map((m) => m.id).filter((id): id is string => Boolean(id));
+    const modelAvailable = ids.length === 0 || ids.includes(targetModel);
+
+    return jsonResponse({
+      ok: true,
+      provider,
+      model: targetModel,
+      modelAvailable,
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Erro ao conectar no provedor.';
+    return jsonResponse({ ok: false, error: message }, 502);
+  }
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
@@ -195,6 +252,11 @@ export default {
       const id = env.ROOM_RELAY.idFromName(roomId);
       const stub = env.ROOM_RELAY.get(id);
       return stub.fetch(request);
+    }
+
+    // Verificação stateless da chave BYOK (sem gastar tokens)
+    if (url.pathname === '/api/ocr/verify') {
+      return handleVerifyKey(request);
     }
 
     // Proxy stateless BYOK para evitar CORS (nunca persiste nem loga chaves)

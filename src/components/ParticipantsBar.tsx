@@ -36,7 +36,7 @@ export function ParticipantsBar({
   const activePerson = participants.find((p) => p.id === activeParticipantId);
 
   return (
-    <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-3">
+    <section data-tour="participants-bar" className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-3">
       <div className="mb-2 flex items-center justify-between gap-2">
         <span className="text-xs font-medium text-zinc-400">
           Marcando itens para:{' '}
@@ -49,6 +49,7 @@ export function ParticipantsBar({
 
         <button
           type="button"
+          data-tour="manual-person"
           onClick={() => setAdding((v) => !v)}
           className="inline-flex items-center gap-1 rounded-lg border border-zinc-700 bg-zinc-800 px-2.5 py-1 text-[11px] font-semibold text-emerald-300 transition hover:bg-zinc-700 active:scale-95"
         >

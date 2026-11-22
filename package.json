@@ -13,6 +13,7 @@
     "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
+    "driver.js": "^1.14.0",
     "lucide-react": "^0.511.0",
     "qrcode.react": "^4.2.0",
     "react": "^19.1.0",

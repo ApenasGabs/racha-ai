@@ -16,6 +16,7 @@ import {
 } from './lib/storage';
 import { computeBillSummary, formatCurrency } from './lib/calculations';
 import { pickColor } from './lib/reducer';
+import { hasSeenTour, startTour } from './lib/tour';
 import { useSessionSync } from './hooks/useSessionSync';
 import { LandingView } from './components/LandingView';
 import { Header } from './components/Header';
@@ -189,6 +190,16 @@ export default function App() {
     return myBreakdown?.totalCents ?? 0;
   }, [state, identity.clientId]);
 
+  // Dispara tour guiado automaticamente na 1ª visita (Landing, Host ou Guest)
+  useEffect(() => {
+    const scope = !roomId ? 'landing' : state ? (isHost ? 'host' : 'guest') : null;
+    if (!scope || hasSeenTour(scope)) return;
+    const timer = window.setTimeout(() => {
+      startTour(scope);
+    }, 550);
+    return () => window.clearTimeout(timer);
+  }, [roomId, Boolean(state), isHost]);
+
   // 1. Tela inicial (sem sala ativa)
   if (!roomId) {
     return (
@@ -205,6 +216,7 @@ export default function App() {
             refreshSavedSessions();
           }}
           onOpenApiKey={() => setShowApiKeyModal(true)}
+          onStartTour={() => startTour('landing')}
         />
         {showApiKeyModal && (
           <ApiKeyModal
@@ -271,6 +283,7 @@ export default function App() {
           hasApiKey={Boolean(byokConfig?.apiKey)}
           onOpenQr={() => setShowQrModal(true)}
           onOpenApiKey={() => setShowApiKeyModal(true)}
+          onStartTour={() => startTour(isHost ? 'host' : 'guest')}
           onLeave={handleLeaveRoom}
         />
         <div className="mx-auto flex max-w-md flex-col items-center justify-center px-6 py-24 text-center">
@@ -302,6 +315,10 @@ export default function App() {
         hasApiKey={Boolean(byokConfig?.apiKey)}
         onOpenQr={() => setShowQrModal(true)}
         onOpenApiKey={() => setShowApiKeyModal(true)}
+        onStartTour={() => {
+          setActiveTab('items');
+          window.setTimeout(() => startTour(isHost ? 'host' : 'guest'), 120);
+        }}
         onLeave={handleLeaveRoom}
       />
 
@@ -418,6 +435,7 @@ export default function App() {
 
           <button
             type="button"
+            data-tour="tab-summary"
             onClick={() => setActiveTab('summary')}
             className={`flex items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-bold transition ${
               activeTab === 'summary'
