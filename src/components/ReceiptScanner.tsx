@@ -84,7 +84,7 @@ export function ReceiptScanner({
   };
 
   return (
-    <section className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-3.5">
+    <section data-tour="receipt-scanner" className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-3.5">
       {/* Inputs ocultos para câmera e galeria */}
       <input
         ref={cameraInputRef}

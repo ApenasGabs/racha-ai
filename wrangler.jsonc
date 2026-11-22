@@ -3,6 +3,13 @@
   "name": "racha-ai",
   "main": "worker/index.ts",
   "compatibility_date": "2025-05-01",
+  "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "racha-ai.apenasgabs.dev",
+      "custom_domain": true
+    }
+  ],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
