@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, HelpCircle, KeyRound, Plus, QrCode, Receipt, ShieldCheck, Trash2 } from 'lucide-react';
+import { ArrowRight, Heart, HelpCircle, KeyRound, Plus, QrCode, Receipt, ShieldCheck, Trash2 } from 'lucide-react';
 import type { StoredHostSession } from '../lib/storage';
 import { computeBillSummary, formatCurrency } from '../lib/calculations';
 
@@ -12,6 +12,7 @@ interface LandingViewProps {
   onResumeSession: (roomId: string) => void;
   onDeleteSession: (roomId: string) => void;
   onOpenApiKey: () => void;
+  onOpenDonation: () => void;
   onStartTour: () => void;
 }
 
@@ -24,6 +25,7 @@ export function LandingView({
   onResumeSession,
   onDeleteSession,
   onOpenApiKey,
+  onOpenDonation,
   onStartTour,
 }: LandingViewProps) {
   const [title, setTitle] = useState('');
@@ -56,14 +58,25 @@ export function LandingView({
           <p className="mt-1.5 text-sm text-zinc-400">
             Tire foto da nota, compartilhe o QR Code e cada um escolhe o que consumiu em tempo real.
           </p>
-          <button
-            type="button"
-            onClick={onStartTour}
-            className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs font-medium text-zinc-300 transition hover:border-emerald-500/40 hover:text-white"
-          >
-            <HelpCircle className="h-3.5 w-3.5 text-emerald-400" />
-            Como funciona? (Tour rápido)
-          </button>
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+            <button
+              type="button"
+              onClick={onStartTour}
+              className="inline-flex items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs font-medium text-zinc-300 transition hover:border-emerald-500/40 hover:text-white"
+            >
+              <HelpCircle className="h-3.5 w-3.5 text-emerald-400" />
+              Como funciona?
+            </button>
+
+            <button
+              type="button"
+              onClick={onOpenDonation}
+              className="inline-flex items-center gap-1.5 rounded-full border border-rose-500/30 bg-rose-500/10 px-3 py-1 text-xs font-semibold text-rose-300 transition hover:bg-rose-500/20"
+            >
+              <Heart className="h-3.5 w-3.5 fill-rose-500/30 text-rose-400" />
+              Apoiar via Pix
+            </button>
+          </div>
         </header>
 
         {/* Criar nova mesa */}

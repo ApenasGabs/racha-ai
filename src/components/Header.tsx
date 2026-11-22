@@ -1,4 +1,4 @@
-import { ArrowLeft, HelpCircle, KeyRound, QrCode, Users, Wifi, WifiOff } from 'lucide-react';
+import { ArrowLeft, Heart, HelpCircle, KeyRound, QrCode, Users, Wifi, WifiOff } from 'lucide-react';
 import type { ConnectionState } from '../lib/ws-client';
 
 interface HeaderProps {
@@ -11,6 +11,7 @@ interface HeaderProps {
   hasApiKey: boolean;
   onOpenQr: () => void;
   onOpenApiKey: () => void;
+  onOpenDonation: () => void;
   onStartTour: () => void;
   onLeave: () => void;
 }
@@ -25,6 +26,7 @@ export function Header({
   hasApiKey,
   onOpenQr,
   onOpenApiKey,
+  onOpenDonation,
   onStartTour,
   onLeave,
 }: HeaderProps) {
@@ -79,8 +81,18 @@ export function Header({
           </div>
         </div>
 
-        {/* Direita: Ajuda + Chave BYOK (Host) + Botão QR Code SEMPRE VISÍVEL */}
+        {/* Direita: Apoio + Ajuda + Chave BYOK (Host) + Botão QR Code SEMPRE VISÍVEL */}
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+          <button
+            type="button"
+            onClick={onOpenDonation}
+            title="Apoiar o RachaAí via LivePix"
+            aria-label="Apoiar o projeto via LivePix"
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-400 transition hover:bg-rose-500/20 active:scale-95"
+          >
+            <Heart className="h-4 w-4" />
+          </button>
+
           <button
             type="button"
             onClick={onStartTour}

@@ -22,6 +22,7 @@ import { LandingView } from './components/LandingView';
 import { Header } from './components/Header';
 import { QrModal } from './components/QrModal';
 import { ApiKeyModal } from './components/ApiKeyModal';
+import { DonationModal } from './components/DonationModal';
 import { ReceiptScanner } from './components/ReceiptScanner';
 import { ParticipantsBar } from './components/ParticipantsBar';
 import { ItemCard } from './components/ItemCard';
@@ -57,6 +58,7 @@ export default function App() {
   const [activeParticipantId, setActiveParticipantId] = useState<string>(identity.clientId);
   const [showQrModal, setShowQrModal] = useState(false);
   const [showApiKeyModal, setShowApiKeyModal] = useState(false);
+  const [showDonationModal, setShowDonationModal] = useState(false);
 
   const isHost = Boolean(roomId && hostSecret);
   const shouldConnect = Boolean(roomId && (isHost || guestNameConfirmed));
@@ -216,6 +218,7 @@ export default function App() {
             refreshSavedSessions();
           }}
           onOpenApiKey={() => setShowApiKeyModal(true)}
+          onOpenDonation={() => setShowDonationModal(true)}
           onStartTour={() => startTour('landing')}
         />
         {showApiKeyModal && (
@@ -224,6 +227,9 @@ export default function App() {
             onSave={handleSaveByok}
             onClose={() => setShowApiKeyModal(false)}
           />
+        )}
+        {showDonationModal && (
+          <DonationModal onClose={() => setShowDonationModal(false)} />
         )}
       </>
     );
@@ -283,6 +289,7 @@ export default function App() {
           hasApiKey={Boolean(byokConfig?.apiKey)}
           onOpenQr={() => setShowQrModal(true)}
           onOpenApiKey={() => setShowApiKeyModal(true)}
+          onOpenDonation={() => setShowDonationModal(true)}
           onStartTour={() => startTour(isHost ? 'host' : 'guest')}
           onLeave={handleLeaveRoom}
         />
@@ -315,6 +322,7 @@ export default function App() {
         hasApiKey={Boolean(byokConfig?.apiKey)}
         onOpenQr={() => setShowQrModal(true)}
         onOpenApiKey={() => setShowApiKeyModal(true)}
+        onOpenDonation={() => setShowDonationModal(true)}
         onStartTour={() => {
           setActiveTab('items');
           window.setTimeout(() => startTour(isHost ? 'host' : 'guest'), 120);
@@ -413,6 +421,7 @@ export default function App() {
             }
             onSplitUnclaimed={() => dispatch({ type: 'SPLIT_UNCLAIMED_EQUALLY' })}
             onUpdateSettings={(patch) => dispatch({ type: 'UPDATE_SETTINGS', ...patch })}
+            onOpenDonation={() => setShowDonationModal(true)}
           />
         )}
       </main>
@@ -459,6 +468,10 @@ export default function App() {
           onSave={handleSaveByok}
           onClose={() => setShowApiKeyModal(false)}
         />
+      )}
+
+      {showDonationModal && (
+        <DonationModal onClose={() => setShowDonationModal(false)} />
       )}
     </div>
   );
